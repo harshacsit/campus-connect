@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Messages — CampusConnect</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .msg-item{display:flex;align-items:center;gap:.9rem;padding:.9rem 1rem;border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;border:1.5px solid transparent}
+    .msg-item:hover{background:rgba(255,107,53,.05);border-color:rgba(255,107,53,.2)}
+    .msg-item.active{background:rgba(255,107,53,.08);border-color:var(--primary)}
+    .chat-bubble{padding:.7rem 1rem;border-radius:16px;max-width:75%;font-size:.9rem;line-height:1.5}
+    .bubble-in{background:white;border:1.5px solid var(--border);border-radius:4px 16px 16px 16px;align-self:flex-start}
+    .bubble-out{background:var(--primary);color:white;border-radius:16px 4px 16px 16px;align-self:flex-end}
+  </style>
+</head>
+<body>
+  <div id="cc-navbar"></div>
+  <div id="cc-toast" class="cc-toast"></div>
+
+  <div class="page-titlebar">
+    <div class="container"><h1>Messages</h1></div>
+  </div>
+
+  <div class="container pb-5">
+    <div class="row g-0" style="background:white;border-radius:var(--radius);border:1.5px solid var(--border);overflow:hidden;min-height:560px;box-shadow:var(--shadow)">
+      <!-- Inbox List -->
+      <div class="col-lg-4" style="border-right:1.5px solid var(--border)">
+        <div style="padding:1rem;border-bottom:1.5px solid var(--border)">
+          <input type="text" class="cc-input" placeholder="Search messages…" style="font-size:.85rem" />
+        </div>
+        <div id="msg-list" style="padding:.5rem"></div>
+      </div>
+      <!-- Chat Window -->
+      <div class="col-lg-8 d-flex flex-column">
+        <div id="chat-header" style="padding:1rem 1.3rem;border-bottom:1.5px solid var(--border);display:flex;align-items:center;gap:.9rem">
+          <div style="font-size:.95rem;color:var(--text-muted)">Select a conversation to start chatting</div>
+        </div>
+        <div id="chat-messages" style="flex:1;padding:1.2rem;display:flex;flex-direction:column;gap:.7rem;overflow-y:auto;max-height:380px">
+        </div>
+        <div id="chat-input-area" style="padding:.8rem 1.2rem;border-top:1.5px solid var(--border);display:none">
+          <div class="d-flex gap-2 align-items-center">
+            <input type="text" class="cc-input" placeholder="Type a message…" id="msg-input" style="font-size:.9rem" />
+            <button class="btn-cc" style="padding:.65rem 1rem;flex-shrink:0" onclick="sendMsg()"><i class="bi bi-send-fill"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="cc-footer"></div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../js/db.js"></script>
+  <script src="../js/components.js"></script>
+  <script>
+    renderNavbar('messages');
+    renderFooter();
+
+    const conversations = {
+      m001: [
+        { from:'Priya K.', text:'Hey! Is the Maths book still available?', time:'2h ago', out:false },
+        { from:'You', text:'Yes it is! Just listed it 2 days ago.', time:'2h ago', out:true },
+        { from:'Priya K.', text:'Great! Can we meet on campus tomorrow around 4PM?', time:'1h ago', out:false },
+        { from:'Priya K.', text:'Also is the condition really Good? No torn pages?', time:'1h ago', out:false },
+      ],
+      m002: [
+        { from:'Vikram R.', text:'Can you do ₹380 for the Organic Chem?', time:'5h ago', out:false },
+        { from:'You', text:'Lowest I can go is ₹400. It\'s in great condition.', time:'4h ago', out:true },
+        { from:'Vikram R.', text:'Deal! Can you do campus delivery?', time:'3h ago', out:false },
+      ],
+      m003: [
+        { from:'Ananya V.', text:'Session booked for Saturday 4PM ✓', time:'1d ago', out:false },
+        { from:'You', text:'Confirmed! See you at the library study room.', time:'1d ago', out:true },
+        { from:'Ananya V.', text:'Perfect. Bring your laptop. We\'ll cover regression and neural nets.', time:'23h ago', out:false },
+      ],
+      m004: [
+        { from:'Kiran P.', text:'Photos delivered to your Drive 📸', time:'2d ago', out:false },
+        { from:'You', text:'They look amazing! Leaving a 5-star review now.', time:'2d ago', out:true },
+        { from:'Kiran P.', text:'Thank you! Happy to work together again 🙏', time:'2d ago', out:false },
+      ]
+    };
+
+    let activeId = null;
+
+    const list = document.getElementById('msg-list');
+    CC_DB.messages.forEach(m => {
+      const el = document.createElement('div');
+      el.className = 'msg-item';
+      el.id = 'msg-' + m.id;
+      el.innerHTML = `
+        <div class="avatar" style="background:var(--secondary)">${m.initials}</div>
+        <div class="flex-grow-1 overflow-hidden">
+          <div class="d-flex justify-content-between align-items-center">
+            <span style="font-family:var(--font-head);font-weight:700;font-size:.9rem">${m.from}</span>
+            <span style="font-size:.72rem;color:var(--text-muted)">${m.time}</span>
+          </div>
+          <div style="font-size:.8rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.preview}</div>
+        </div>
+        ${m.unread ? '<span style="width:9px;height:9px;background:var(--primary);border-radius:50%;flex-shrink:0"></span>' : ''}`;
+      el.onclick = () => openChat(m.id);
+      list.appendChild(el);
+    });
+
+    function openChat(id) {
+      activeId = id;
+      document.querySelectorAll('.msg-item').forEach(i => i.classList.remove('active'));
+      document.getElementById('msg-' + id).classList.add('active');
+
+      const m = CC_DB.messages.find(x => x.id === id);
+      m.unread = false;
+
+      document.getElementById('chat-header').innerHTML = `
+        <div class="avatar">${m.initials}</div>
+        <div>
+          <div style="font-family:var(--font-head);font-weight:700;font-size:.95rem">${m.from}</div>
+          <div style="font-size:.75rem;color:var(--text-muted)">${m.listing}</div>
+        </div>
+        <div class="ms-auto d-flex gap-2">
+          <button class="btn-cc-outline" style="padding:.3rem .8rem;font-size:.75rem" onclick="showToast('Video call feature coming soon!','📹')"><i class="bi bi-camera-video"></i></button>
+          <button class="btn-cc-outline" style="padding:.3rem .8rem;font-size:.75rem" onclick="showToast('Block feature coming soon!','🚫')"><i class="bi bi-three-dots"></i></button>
+        </div>`;
+
+      const msgs = document.getElementById('chat-messages');
+      msgs.innerHTML = '';
+      (conversations[id] || []).forEach(msg => {
+        msgs.innerHTML += `<div class="chat-bubble ${msg.out ? 'bubble-out ms-auto' : 'bubble-in'}">
+          ${msg.text}
+          <div style="font-size:.67rem;opacity:.6;margin-top:.25rem;text-align:${msg.out?'right':'left'}">${msg.time}</div>
+        </div>`;
+      });
+      msgs.scrollTop = msgs.scrollHeight;
+      document.getElementById('chat-input-area').style.display = 'flex';
+    }
+
+    function sendMsg() {
+      const input = document.getElementById('msg-input');
+      const text = input.value.trim();
+      if (!text || !activeId) return;
+      const msgs = document.getElementById('chat-messages');
+      msgs.innerHTML += `<div class="chat-bubble bubble-out ms-auto">${text}<div style="font-size:.67rem;opacity:.6;margin-top:.25rem;text-align:right">Just now</div></div>`;
+      msgs.scrollTop = msgs.scrollHeight;
+      input.value = '';
+      setTimeout(() => {
+        msgs.innerHTML += `<div class="chat-bubble bubble-in">Thanks for your message! I'll get back to you soon 😊<div style="font-size:.67rem;opacity:.6;margin-top:.25rem">Just now</div></div>`;
+        msgs.scrollTop = msgs.scrollHeight;
+      }, 1200);
+    }
+
+    document.getElementById('msg-input').addEventListener('keydown', e => { if (e.key==='Enter') sendMsg(); });
+    openChat('m001');
+  </script>
+</body>
+</html>

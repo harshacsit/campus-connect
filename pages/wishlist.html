@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wishlist — CampusConnect</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <div id="cc-navbar"></div>
+  <div id="cc-toast" class="cc-toast"></div>
+
+  <div class="page-titlebar">
+    <div class="container d-flex justify-content-between align-items-center">
+      <div><h1>My Wishlist</h1><p style="color:var(--text-muted);font-size:.88rem;margin:0" id="wish-count">Loading…</p></div>
+      <button class="btn-cc-outline" onclick="addAllToCart()"><i class="bi bi-bag-plus"></i> Add All to Cart</button>
+    </div>
+  </div>
+
+  <div class="container pb-5">
+    <div class="row g-3" id="wishlist-grid"></div>
+    <div id="wish-empty" class="text-center py-5 d-none">
+      <div style="font-size:3.5rem;margin-bottom:1rem">❤️</div>
+      <div style="font-family:var(--font-head);font-size:1.2rem;font-weight:800;color:var(--secondary);margin-bottom:.5rem">Your wishlist is empty</div>
+      <p style="color:var(--text-muted)">Save items you love by clicking the ❤️ on any listing</p>
+      <a href="browse.html" class="btn-cc mt-2">Browse Listings</a>
+    </div>
+  </div>
+
+  <div id="cc-footer"></div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../js/db.js"></script>
+  <script src="../js/components.js"></script>
+  <script>
+    renderNavbar('');
+    renderFooter();
+
+    // Seed wishlist for demo if empty
+    if (CC_DB.wishlist.length === 0) {
+      CC_DB.wishlist = ['l001','l003','l007','l010'];
+      CC_DB.saveWishlist();
+    }
+
+    function renderWishlist() {
+      const items = CC_DB.wishlist.map(id => CC_DB.listings.find(l => l.id === id)).filter(Boolean);
+      const grid = document.getElementById('wishlist-grid');
+      const empty = document.getElementById('wish-empty');
+      document.getElementById('wish-count').textContent = `${items.length} saved item${items.length!==1?'s':''}`;
+
+      if (items.length === 0) { grid.innerHTML = ''; empty.classList.remove('d-none'); return; }
+      empty.classList.add('d-none');
+      grid.innerHTML = items.map(l => `<div class="col-6 col-md-4 col-lg-3">${renderListingCard(l)}</div>`).join('');
+    }
+
+    function addAllToCart() {
+      let added = 0;
+      CC_DB.wishlist.forEach(id => { if (CC_DB.addToCart(id)) added++; });
+      showToast(added > 0 ? `${added} items added to cart!` : 'All items already in cart', '🛒');
+    }
+
+    renderWishlist();
+  </script>
+</body>
+</html>

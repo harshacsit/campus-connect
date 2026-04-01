@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CampusConnect — Campus Marketplace</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="cc-navbar"></div>
+  <div id="cc-toast" class="cc-toast"></div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container position-relative">
+      <div class="row align-items-center g-5">
+        <div class="col-lg-6">
+          <div class="hero-tag fade-up"><i class="bi bi-mortarboard-fill me-1"></i> Exclusively for College Students</div>
+          <h1 class="hero-title fade-up d1">Your Campus.<br>Your <span class="hl">Marketplace.</span></h1>
+          <p style="color:rgba(255,255,255,.6);font-size:.975rem;max-width:430px;margin-bottom:1.75rem;line-height:1.7" class="fade-up d2">
+            Buy & sell textbooks, find tutors, hire student talent — all within your college community.
+          </p>
+          <div class="search-bar fade-up d2" style="margin-bottom:1.4rem">
+            <i class="bi bi-search" style="color:#94a3b8;font-size:.9rem"></i>
+            <input type="text" placeholder="Search textbooks, services, gigs…" id="heroSearch" />
+            <button class="btn-cc" onclick="heroSearch()">Search</button>
+          </div>
+          <div class="d-flex gap-2 flex-wrap fade-up d3">
+            <a href="pages/browse.html?cat=textbooks" class="cat-pill" style="background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.18);color:rgba(255,255,255,.75);font-size:.8rem">📚 Textbooks</a>
+            <a href="pages/tutoring.html" class="cat-pill" style="background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.18);color:rgba(255,255,255,.75);font-size:.8rem">🎓 Tutoring</a>
+            <a href="pages/gigs.html" class="cat-pill" style="background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.18);color:rgba(255,255,255,.75);font-size:.8rem">💼 Gigs</a>
+            <a href="pages/browse.html?cat=supplies" class="cat-pill" style="background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.18);color:rgba(255,255,255,.75);font-size:.8rem">📐 Supplies</a>
+          </div>
+          <div class="hero-stats fade-up d4">
+            <div class="stat-item"><span class="stat-num">2,400+</span><div class="stat-lbl">Active Listings</div></div>
+            <div class="stat-item"><span class="stat-num">15,000+</span><div class="stat-lbl">Students</div></div>
+            <div class="stat-item"><span class="stat-num">98%</span><div class="stat-lbl">Happy Buyers</div></div>
+            <div class="stat-item"><span class="stat-num">₹12L+</span><div class="stat-lbl">Saved by Students</div></div>
+          </div>
+        </div>
+        <div class="col-lg-6 d-none d-lg-block fade-up d2">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div style="border-radius:14px;overflow:hidden;height:200px;grid-row:span 2">
+              <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=400&q=80" alt="Campus students" style="width:100%;height:100%;object-fit:cover" />
+            </div>
+            <div style="border-radius:14px;overflow:hidden;height:94px">
+              <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&q=80" alt="Books" style="width:100%;height:100%;object-fit:cover" />
+            </div>
+            <div style="border-radius:14px;overflow:hidden;height:94px">
+              <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&q=80" alt="Coding" style="width:100%;height:100%;object-fit:cover" />
+            </div>
+          </div>
+          <!-- Floating badge -->
+          <div style="background:white;border-radius:12px;padding:.9rem 1.2rem;margin-top:12px;display:flex;align-items:center;gap:.8rem;box-shadow:0 8px 30px rgba(0,0,0,.2)">
+            <div style="width:40px;height:40px;background:var(--primary-light);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem">📚</div>
+            <div>
+              <div style="font-weight:700;color:var(--secondary);font-size:.9rem">Engineering Maths Vol.2</div>
+              <div style="font-size:.75rem;color:var(--text-muted)">by Priya K. · JNTU Kakinada</div>
+            </div>
+            <div style="margin-left:auto;font-weight:800;color:var(--primary);font-size:1rem">₹280</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATEGORIES -->
+  <section class="py-5">
+    <div class="container">
+      <div class="text-center mb-4">
+        <div class="section-label">Explore</div>
+        <div class="section-title">Browse by Category</div>
+      </div>
+      <div class="row g-3 justify-content-center">
+        <div class="col-6 col-md-3">
+          <a href="pages/browse.html?cat=textbooks" class="cc-card d-block text-center p-4" style="text-decoration:none">
+            <img src="https://images.unsplash.com/photo-1509228627152-72ae9ae6848d?w=300&q=80" alt="Textbooks" style="width:72px;height:72px;object-fit:cover;border-radius:12px;margin-bottom:.85rem" />
+            <div style="font-weight:700;font-size:.95rem;color:var(--secondary);margin-bottom:.2rem">Textbooks</div>
+            <div style="font-size:.78rem;color:var(--text-muted)">Save up to 70%</div>
+          </a>
+        </div>
+        <div class="col-6 col-md-3">
+          <a href="pages/tutoring.html" class="cc-card d-block text-center p-4" style="text-decoration:none">
+            <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=300&q=80" alt="Tutoring" style="width:72px;height:72px;object-fit:cover;border-radius:12px;margin-bottom:.85rem" />
+            <div style="font-weight:700;font-size:.95rem;color:var(--secondary);margin-bottom:.2rem">Tutoring</div>
+            <div style="font-size:.78rem;color:var(--text-muted)">Learn from toppers</div>
+          </a>
+        </div>
+        <div class="col-6 col-md-3">
+          <a href="pages/gigs.html" class="cc-card d-block text-center p-4" style="text-decoration:none">
+            <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=300&q=80" alt="Gigs" style="width:72px;height:72px;object-fit:cover;border-radius:12px;margin-bottom:.85rem" />
+            <div style="font-weight:700;font-size:.95rem;color:var(--secondary);margin-bottom:.2rem">Gigs</div>
+            <div style="font-size:.78rem;color:var(--text-muted)">Hire campus talent</div>
+          </a>
+        </div>
+        <div class="col-6 col-md-3">
+          <a href="pages/browse.html?cat=supplies" class="cc-card d-block text-center p-4" style="text-decoration:none">
+            <img src="https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=300&q=80" alt="Supplies" style="width:72px;height:72px;object-fit:cover;border-radius:12px;margin-bottom:.85rem" />
+            <div style="font-weight:700;font-size:.95rem;color:var(--secondary);margin-bottom:.2rem">Supplies</div>
+            <div style="font-size:.78rem;color:var(--text-muted)">Lab gear & tools</div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED LISTINGS -->
+  <section class="pb-5">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-end mb-4">
+        <div>
+          <div class="section-label">Fresh Picks</div>
+          <div class="section-title" style="margin-bottom:0">Featured Listings</div>
+        </div>
+        <a href="pages/browse.html" class="btn-cc-outline">View All <i class="bi bi-arrow-right"></i></a>
+      </div>
+      <div class="row g-3" id="featured-grid"></div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="py-5" style="background:var(--secondary)">
+    <div class="container">
+      <div class="text-center mb-4">
+        <div class="section-label" style="color:#93c5fd">Simple & Safe</div>
+        <div class="section-title" style="color:white">How CampusConnect Works</div>
+      </div>
+      <div class="row g-4 text-center">
+        <div class="col-md-3">
+          <div style="width:52px;height:52px;background:rgba(37,99,235,.18);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin:0 auto .85rem"><i class="bi bi-pencil-square text-primary" style="color:#93c5fd!important"></i></div>
+          <div style="font-weight:700;color:white;font-size:.95rem;margin-bottom:.3rem">List Your Item</div>
+          <div style="font-size:.82rem;color:rgba(255,255,255,.45)">Post a book, service, or gig in under 2 minutes. Free.</div>
+        </div>
+        <div class="col-md-3">
+          <div style="width:52px;height:52px;background:rgba(16,185,129,.18);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin:0 auto .85rem"><i class="bi bi-chat-dots" style="color:#6ee7b7"></i></div>
+          <div style="font-weight:700;color:white;font-size:.95rem;margin-bottom:.3rem">Chat & Negotiate</div>
+          <div style="font-size:.82rem;color:rgba(255,255,255,.45)">Message sellers directly. Agree on price and meetup.</div>
+        </div>
+        <div class="col-md-3">
+          <div style="width:52px;height:52px;background:rgba(245,158,11,.18);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin:0 auto .85rem"><i class="bi bi-credit-card" style="color:#fcd34d"></i></div>
+          <div style="font-weight:700;color:white;font-size:.95rem;margin-bottom:.3rem">Pay Securely</div>
+          <div style="font-size:.82rem;color:rgba(255,255,255,.45)">UPI, card, or campus wallet. Held in escrow.</div>
+        </div>
+        <div class="col-md-3">
+          <div style="width:52px;height:52px;background:rgba(37,99,235,.18);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin:0 auto .85rem"><i class="bi bi-star" style="color:#93c5fd"></i></div>
+          <div style="font-weight:700;color:white;font-size:.95rem;margin-bottom:.3rem">Rate & Review</div>
+          <div style="font-size:.82rem;color:rgba(255,255,255,.45)">Build your campus reputation. Trusted sellers earn more.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST BANNER -->
+  <section class="py-5">
+    <div class="container">
+      <div class="row g-4 align-items-center">
+        <div class="col-lg-5">
+          <div style="border-radius:16px;overflow:hidden;height:320px">
+            <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=700&q=80" alt="Students" style="width:100%;height:100%;object-fit:cover" />
+          </div>
+        </div>
+        <div class="col-lg-6 offset-lg-1">
+          <div class="section-label">Trusted Platform</div>
+          <h2 class="section-title">Built for Students.<br>Trusted by Students.</h2>
+          <p class="section-sub" style="margin-bottom:1.5rem">CampusConnect uses college email verification so you only deal with verified students from real colleges. No scams. No strangers.</p>
+          <div class="row g-3">
+            <div class="col-6">
+              <div style="display:flex;align-items:flex-start;gap:.6rem">
+                <i class="bi bi-shield-check" style="color:var(--accent);font-size:1.2rem;margin-top:.1rem"></i>
+                <div><div style="font-weight:700;font-size:.88rem">Verified Students Only</div><div style="font-size:.78rem;color:var(--text-muted)">College email required</div></div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div style="display:flex;align-items:flex-start;gap:.6rem">
+                <i class="bi bi-lock" style="color:var(--primary);font-size:1.2rem;margin-top:.1rem"></i>
+                <div><div style="font-weight:700;font-size:.88rem">Escrow Payments</div><div style="font-size:.78rem;color:var(--text-muted)">Safe until delivery</div></div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div style="display:flex;align-items:flex-start;gap:.6rem">
+                <i class="bi bi-star" style="color:var(--accent2);font-size:1.2rem;margin-top:.1rem"></i>
+                <div><div style="font-weight:700;font-size:.88rem">Ratings & Reviews</div><div style="font-size:.78rem;color:var(--text-muted)">Community trust score</div></div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div style="display:flex;align-items:flex-start;gap:.6rem">
+                <i class="bi bi-headset" style="color:var(--accent);font-size:1.2rem;margin-top:.1rem"></i>
+                <div><div style="font-weight:700;font-size:.88rem">Dispute Resolution</div><div style="font-size:.78rem;color:var(--text-muted)">24/7 support team</div></div>
+              </div>
+            </div>
+          </div>
+          <a href="pages/browse.html" class="btn-cc mt-4">Start Browsing <i class="bi bi-arrow-right"></i></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="pb-5">
+    <div class="container">
+      <div style="background:var(--secondary);border-radius:20px;padding:3.5rem 2.5rem;text-align:center;position:relative;overflow:hidden">
+        <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(37,99,235,.2) 0%,transparent 70%)"></div>
+        <div class="position-relative">
+          <div class="section-label" style="color:#93c5fd;justify-content:center">Get Started</div>
+          <h2 style="font-size:2rem;font-weight:800;color:white;margin-bottom:.6rem;letter-spacing:-.025em">Ready to Sell Something?</h2>
+          <p style="color:rgba(255,255,255,.5);max-width:380px;margin:.5rem auto 2rem;font-size:.925rem">Hundreds of students are looking for what you have. List in 2 minutes for free.</p>
+          <a href="pages/sell.html" class="btn-cc" style="font-size:.95rem;padding:.75rem 2rem">Post a Listing — It's Free</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="cc-footer"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/db.js"></script>
+  <script src="js/components.js"></script>
+  <script>
+    renderNavbar('home');
+    renderFooter();
+
+    const grid = document.getElementById('featured-grid');
+    CC_DB.listings.slice(0, 8).forEach(l => {
+      const col = document.createElement('div');
+      col.className = 'col-6 col-md-4 col-lg-3';
+      col.innerHTML = renderListingCard(l);
+      grid.appendChild(col);
+    });
+
+    function heroSearch() {
+      const q = document.getElementById('heroSearch').value.trim();
+      if (q) window.location.href = `pages/browse.html?q=${encodeURIComponent(q)}`;
+    }
+    document.getElementById('heroSearch').addEventListener('keydown', e => { if (e.key === 'Enter') heroSearch(); });
+  </script>
+</body>
+</html>

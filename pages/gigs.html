@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Campus Gigs — CampusConnect</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <div id="cc-navbar"></div>
+  <div id="cc-toast" class="cc-toast"></div>
+
+  <!-- HERO -->
+  <div style="position:relative;height:300px;overflow:hidden">
+    <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1400&q=80" alt="Students working" style="width:100%;height:100%;object-fit:cover;filter:brightness(.4)" />
+    <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:1rem">
+      <div class="hero-tag" style="margin-bottom:1rem">💼 Student Freelancers</div>
+      <h1 style="font-size:2.3rem;font-weight:800;color:white;margin-bottom:.65rem;letter-spacing:-.03em">Hire Campus Talent</h1>
+      <p style="color:rgba(255,255,255,.65);max-width:420px;margin:0 auto 1.5rem;font-size:.92rem">Photography, design, coding, video editing at student-friendly prices.</p>
+      <div class="search-bar mx-auto" style="max-width:440px;width:100%">
+        <i class="bi bi-search" style="color:#94a3b8"></i>
+        <input type="text" placeholder="Photography, design, web dev…" id="gig-search" />
+        <button class="btn-cc" onclick="filterGigs()">Search</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container py-5">
+    <div class="d-flex gap-2 flex-wrap mb-4 justify-content-center" id="gig-pills">
+      <button class="cat-pill active" onclick="filterGigCat(this,'all')">All Gigs</button>
+      <button class="cat-pill" onclick="filterGigCat(this,'photo')">Photography</button>
+      <button class="cat-pill" onclick="filterGigCat(this,'design')">Design</button>
+      <button class="cat-pill" onclick="filterGigCat(this,'video')">Video Editing</button>
+      <button class="cat-pill" onclick="filterGigCat(this,'web')">Web Dev</button>
+      <button class="cat-pill" onclick="filterGigCat(this,'writing')">Writing</button>
+    </div>
+    <div class="row g-4" id="gigs-grid"></div>
+  </div>
+
+  <!-- POST GIG CTA -->
+  <section class="py-5" style="background:var(--secondary)">
+    <div class="container">
+      <div class="row align-items-center g-5">
+        <div class="col-lg-6">
+          <div class="section-label" style="color:#93c5fd">Earn From Your Skills</div>
+          <h2 style="font-size:1.75rem;font-weight:800;color:white;margin-bottom:.6rem;letter-spacing:-.025em">Offer Your Skills as a Gig</h2>
+          <p style="color:rgba(255,255,255,.5);margin-bottom:1.5rem;font-size:.92rem">Got a skill? Turn it into income. Students are actively looking for photographers, designers, coders and more.</p>
+          <a href="sell.html" class="btn-cc">Post a Gig Free</a>
+        </div>
+        <div class="col-lg-5 offset-lg-1 d-none d-lg-block">
+          <div style="border-radius:16px;overflow:hidden;height:240px">
+            <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=700&q=80" alt="Working students" style="width:100%;height:100%;object-fit:cover" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="cc-footer"></div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../js/db.js"></script>
+  <script src="../js/components.js"></script>
+  <script>
+    renderNavbar('gigs');
+    renderFooter();
+
+    const gigs = [
+      { cat:'photo', name:'Kiran P.', photo:'https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?w=400&q=80', avatar:'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&q=80', title:'Campus Event Photography', price:1500, rating:4.9, orders:67, delivery:'2 days', desc:'Professional DSLR photography for fests, symposiums, farewell events. High-res delivery via Drive.' },
+      { cat:'design', name:'Rohan D.', photo:'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=400&q=80', avatar:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&q=80', title:'Graphic Design & Posters', price:800, rating:4.8, orders:43, delivery:'1–2 days', desc:'Canva & Illustrator pro. Fest posters, social media creatives, infographics. Unlimited revisions.' },
+      { cat:'video', name:'Aditya K.', photo:'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=400&q=80', avatar:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&q=80', title:'Video Editing (Premiere/AE)', price:600, rating:4.7, orders:38, delivery:'3 days', desc:'Short films, documentary edits, reels, title sequences. Colour grading included.' },
+      { cat:'web', name:'Preethi S.', photo:'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&q=80', avatar:'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&q=80', title:'Website Landing Page', price:2000, rating:4.9, orders:25, delivery:'5 days', desc:'HTML/CSS/JS responsive site. Mobile-first. Portfolio, club, or event websites.' },
+      { cat:'writing', name:'Teja R.', photo:'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=400&q=80', avatar:'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&q=80', title:'Content Writing & Blogs', price:400, rating:4.7, orders:55, delivery:'2 days', desc:'SEO-aware articles, research reports, LinkedIn posts, tech blogs. 1000+ words.' },
+      { cat:'design', name:'Varsha M.', photo:'https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=400&q=80', avatar:'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=80&q=80', title:'Logo & Brand Identity', price:1200, rating:4.8, orders:32, delivery:'3 days', desc:'Full brand kit: logo, colours, typography, business card. Vector files included.' },
+      { cat:'photo', name:'Nikhil R.', photo:'https://images.unsplash.com/photo-1533922922960-9fceb9ef4733?w=400&q=80', avatar:'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=80&q=80', title:'Social Media Photography', price:900, rating:4.6, orders:29, delivery:'1 day', desc:'Product photography, lifestyle shoots, college fests. Quick turnaround, Instagram-ready.' },
+      { cat:'web', name:'Lakshmi V.', photo:'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=400&q=80', avatar:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=80&q=80', title:'Python Script / Automation', price:1500, rating:4.9, orders:18, delivery:'4 days', desc:'Data scraping, file automation, Excel processing, simple bots. Clean commented code.' },
+    ];
+
+    let activeCat = 'all', gigQ = '';
+
+    function renderGigs() {
+      const grid = document.getElementById('gigs-grid');
+      const filtered = gigs.filter(g => {
+        if (activeCat !== 'all' && g.cat !== activeCat) return false;
+        if (gigQ && !g.title.toLowerCase().includes(gigQ) && !g.desc.toLowerCase().includes(gigQ)) return false;
+        return true;
+      });
+      grid.innerHTML = filtered.map(g => `
+      <div class="col-md-6 col-lg-3">
+        <div class="cc-card h-100">
+          <div style="height:168px;overflow:hidden;background:#f1f5f9">
+            <img src="${g.photo}" alt="${g.title}" style="width:100%;height:100%;object-fit:cover;transition:transform .35s"
+              onerror="this.parentElement.innerHTML='<div style=width:100%;height:100%;background:#e2e8f0;display:flex;align-items:center;justify-content:center;font-size:2.5rem>💼</div>'"
+              onmouseenter="this.style.transform='scale(1.05)'" onmouseleave="this.style.transform='scale(1)'" />
+          </div>
+          <div class="cc-card-body">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <img src="${g.avatar}" style="width:26px;height:26px;border-radius:50%;object-fit:cover"
+                onerror="this.outerHTML='<div class=avatar style=width:26px;height:26px;font-size:.65rem>${g.name[0]}</div>'" />
+              <span style="font-size:.78rem;font-weight:500;color:var(--text-muted)">${g.name}</span>
+              <span class="chip yellow ms-auto" style="font-size:.65rem">${g.cat}</span>
+            </div>
+            <div style="font-weight:700;font-size:.9rem;color:var(--secondary);margin-bottom:.3rem;line-height:1.3">${g.title}</div>
+            <div style="font-size:.8rem;color:var(--text-muted);margin-bottom:.5rem;line-height:1.5">${g.desc.substring(0,72)}…</div>
+            <div style="font-size:.75rem;color:var(--text-muted);margin-bottom:.6rem">
+              <span class="rating">★ ${g.rating}</span> · ${g.orders} orders · ⚡ ${g.delivery}
+            </div>
+            <hr class="divider" style="margin:.6rem 0" />
+            <div class="d-flex align-items-center justify-content-between">
+              <div>
+                <div style="font-size:.68rem;color:var(--text-muted)">Starting at</div>
+                <div style="font-size:1.05rem;font-weight:800;color:var(--primary)">₹${g.price.toLocaleString('en-IN')}</div>
+              </div>
+              <button class="btn-cc" style="font-size:.78rem;padding:.38rem .85rem" onclick="addCart('l004');showToast('Gig added to cart!','💼')">Hire</button>
+            </div>
+          </div>
+        </div>
+      </div>`).join('') || '<div class="col-12 text-center py-4"><p style="color:var(--text-muted)">No gigs found.</p></div>';
+    }
+
+    function filterGigCat(btn, cat) {
+      activeCat = cat;
+      document.querySelectorAll('#gig-pills .cat-pill').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      renderGigs();
+    }
+    function filterGigs() { gigQ = document.getElementById('gig-search').value.toLowerCase(); renderGigs(); }
+    document.getElementById('gig-search').addEventListener('input', filterGigs);
+    renderGigs();
+  </script>
+</body>
+</html>

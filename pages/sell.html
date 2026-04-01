@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sell / Post — CampusConnect</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <div id="cc-navbar"></div>
+  <div id="cc-toast" class="cc-toast"></div>
+
+  <div class="page-titlebar">
+    <div class="container">
+      <div class="d-flex align-items-center gap-2 mb-1" style="color:var(--text-muted);font-size:.85rem">
+        <a href="../index.html" style="color:var(--text-muted)">Home</a> <i class="bi bi-chevron-right"></i> <span>Post a Listing</span>
+      </div>
+      <h1>Post a New Listing</h1>
+    </div>
+  </div>
+
+  <div class="container pb-5">
+    <div class="row g-4 justify-content-center">
+      <div class="col-lg-7">
+
+        <!-- Progress Steps -->
+        <div class="d-flex align-items-center gap-2 mb-4">
+          <div class="step-dot active" id="step1-dot">1</div>
+          <div class="cc-progress-bar flex-grow-1"><div class="cc-progress-bar-fill" id="prog-bar" style="width:33%"></div></div>
+          <div class="step-dot" id="step2-dot">2</div>
+          <div class="cc-progress-bar flex-grow-1"><div class="cc-progress-bar-fill" style="width:0%" id="prog-bar2"></div></div>
+          <div class="step-dot" id="step3-dot">3</div>
+        </div>
+        <style>
+          .step-dot{width:32px;height:32px;border-radius:50%;background:var(--border);color:var(--text-muted);font-family:var(--font-head);font-weight:700;font-size:.8rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .3s}
+          .step-dot.active{background:var(--primary);color:white}
+          .step-dot.done{background:var(--accent);color:var(--secondary)}
+        </style>
+
+        <!-- STEP 1: Category -->
+        <div id="step-1">
+          <div class="cc-card p-4 mb-3">
+            <h5 style="font-family:var(--font-head);margin-bottom:1.2rem">Step 1: What are you listing?</h5>
+            <div class="row g-3">
+              <div class="col-6">
+                <div class="type-card" data-type="textbooks" onclick="selectType(this)">
+                  <div style="font-size:2rem;margin-bottom:.5rem">📚</div>
+                  <div style="font-family:var(--font-head);font-weight:700">Textbook / Notes</div>
+                  <div style="font-size:.78rem;color:var(--text-muted);margin-top:.2rem">Sell used books</div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="type-card" data-type="tutoring" onclick="selectType(this)">
+                  <div style="font-size:2rem;margin-bottom:.5rem">🎓</div>
+                  <div style="font-family:var(--font-head);font-weight:700">Tutoring Service</div>
+                  <div style="font-size:.78rem;color:var(--text-muted);margin-top:.2rem">Offer sessions</div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="type-card" data-type="gigs" onclick="selectType(this)">
+                  <div style="font-size:2rem;margin-bottom:.5rem">💼</div>
+                  <div style="font-family:var(--font-head);font-weight:700">Campus Gig</div>
+                  <div style="font-size:.78rem;color:var(--text-muted);margin-top:.2rem">Photography, design, etc.</div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="type-card" data-type="supplies" onclick="selectType(this)">
+                  <div style="font-size:2rem;margin-bottom:.5rem">📐</div>
+                  <div style="font-family:var(--font-head);font-weight:700">Supplies / Tools</div>
+                  <div style="font-size:.78rem;color:var(--text-muted);margin-top:.2rem">Lab gear, stationery</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button class="btn-cc w-100" onclick="goStep(2)" id="step1-next" disabled>Continue <i class="bi bi-arrow-right"></i></button>
+        </div>
+
+        <!-- STEP 2: Details -->
+        <div id="step-2" class="d-none">
+          <div class="cc-card p-4 mb-3">
+            <h5 style="font-family:var(--font-head);margin-bottom:1.2rem">Step 2: Listing Details</h5>
+            <div class="cc-form-group">
+              <label class="cc-label">Title *</label>
+              <input type="text" class="cc-input" placeholder="e.g. Engineering Mathematics Vol.2 — R.K. Jain" id="f-title" maxlength="80" />
+              <div style="font-size:.75rem;color:var(--text-muted);margin-top:.3rem;text-align:right"><span id="title-count">0</span>/80</div>
+            </div>
+            <div class="cc-form-group">
+              <label class="cc-label">Description *</label>
+              <textarea class="cc-textarea cc-input" placeholder="Describe your listing — condition, edition, what's included…" id="f-desc" rows="4" maxlength="500"></textarea>
+            </div>
+            <div class="row g-3">
+              <div class="col-6">
+                <div class="cc-form-group mb-0">
+                  <label class="cc-label">Your Price (₹) *</label>
+                  <input type="number" class="cc-input" placeholder="e.g. 250" id="f-price" min="1" />
+                </div>
+              </div>
+              <div class="col-6" id="orig-price-wrap">
+                <div class="cc-form-group mb-0">
+                  <label class="cc-label">Original Price (₹)</label>
+                  <input type="number" class="cc-input" placeholder="e.g. 600" id="f-orig" min="1" />
+                </div>
+              </div>
+            </div>
+            <div class="cc-form-group mt-3" id="condition-wrap">
+              <label class="cc-label">Condition</label>
+              <select class="cc-select" id="f-condition">
+                <option value="Like New">Like New</option>
+                <option value="Good">Good</option>
+                <option value="Acceptable">Acceptable</option>
+              </select>
+            </div>
+            <div class="cc-form-group">
+              <label class="cc-label">Upload Photos</label>
+              <div style="border:2px dashed var(--border);border-radius:var(--radius-sm);padding:2rem;text-align:center;cursor:pointer;transition:border-color .2s" id="upload-zone" onclick="document.getElementById('file-input').click()">
+                <div style="font-size:2rem;margin-bottom:.5rem">📷</div>
+                <div style="font-family:var(--font-head);font-size:.9rem;font-weight:600;color:var(--secondary)">Click to upload photos</div>
+                <div style="font-size:.78rem;color:var(--text-muted);margin-top:.25rem">PNG, JPG up to 5MB each</div>
+                <input type="file" id="file-input" accept="image/*" multiple class="d-none" onchange="previewFiles(this)" />
+              </div>
+              <div id="file-previews" class="d-flex gap-2 flex-wrap mt-2"></div>
+            </div>
+          </div>
+          <div class="d-flex gap-2">
+            <button class="btn-cc-outline flex-grow-1" onclick="goStep(1)"><i class="bi bi-arrow-left"></i> Back</button>
+            <button class="btn-cc flex-grow-1" onclick="goStep(3)">Preview Listing <i class="bi bi-arrow-right"></i></button>
+          </div>
+        </div>
+
+        <!-- STEP 3: Review & Publish -->
+        <div id="step-3" class="d-none">
+          <div class="cc-card p-4 mb-3">
+            <h5 style="font-family:var(--font-head);margin-bottom:1.2rem">Step 3: Review & Publish</h5>
+            <div id="preview-card" style="background:var(--bg);border-radius:var(--radius-sm);padding:1.2rem;border:1.5px solid var(--border)"></div>
+            <hr class="divider" />
+            <div class="cc-form-group">
+              <label class="cc-label">Preferred Contact Method</label>
+              <div class="d-flex gap-3">
+                <label class="filter-check"><input type="radio" name="contact" value="chat" checked /> In-App Chat</label>
+                <label class="filter-check"><input type="radio" name="contact" value="whatsapp" /> WhatsApp</label>
+                <label class="filter-check"><input type="radio" name="contact" value="email" /> Email</label>
+              </div>
+            </div>
+            <div class="cc-form-group">
+              <label class="filter-check gap-2">
+                <input type="checkbox" id="terms-check" />
+                I confirm this listing is accurate and I agree to the <a href="#" style="color:var(--primary)">Community Guidelines</a>
+              </label>
+            </div>
+          </div>
+          <div class="d-flex gap-2">
+            <button class="btn-cc-outline flex-grow-1" onclick="goStep(2)"><i class="bi bi-arrow-left"></i> Back</button>
+            <button class="btn-cc flex-grow-1" onclick="publishListing()">🚀 Publish Listing</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- SIDEBAR TIPS -->
+      <div class="col-lg-4 d-none d-lg-block">
+        <div class="cc-sidebar mb-3">
+          <div class="sidebar-title">💡 Listing Tips</div>
+          <div style="font-size:.85rem;color:var(--text-muted);line-height:1.8">
+            <p class="mb-2">✅ <strong>Clear photos</strong> sell 3x faster than text-only listings.</p>
+            <p class="mb-2">✅ <strong>Be specific</strong> about edition & condition to avoid disputes.</p>
+            <p class="mb-2">✅ <strong>Price fairly</strong> — check similar listings before posting.</p>
+            <p class="mb-2">✅ <strong>Respond quickly</strong> — fast responders get more buyers.</p>
+          </div>
+        </div>
+        <div class="cc-sidebar" style="background:linear-gradient(135deg,rgba(255,107,53,.07) 0%,rgba(0,212,170,.07) 100%)">
+          <div class="sidebar-title">📊 Your Listing Stats</div>
+          <div class="d-flex justify-content-between mb-2" style="font-size:.88rem">
+            <span style="color:var(--text-muted)">Active Listings</span>
+            <strong>5</strong>
+          </div>
+          <div class="d-flex justify-content-between mb-2" style="font-size:.88rem">
+            <span style="color:var(--text-muted)">Items Sold</span>
+            <strong>23</strong>
+          </div>
+          <div class="d-flex justify-content-between" style="font-size:.88rem">
+            <span style="color:var(--text-muted)">Total Earned</span>
+            <strong style="color:var(--primary)">₹8,450</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="cc-footer"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../js/db.js"></script>
+  <script src="../js/components.js"></script>
+  <script>
+    renderNavbar('sell');
+    renderFooter();
+
+    let selectedType = null;
+
+    // Type card styles
+    document.querySelectorAll('.type-card').forEach(el => {
+      el.style.cssText = 'border:2px solid var(--border);border-radius:12px;padding:1.2rem;text-align:center;cursor:pointer;transition:all .2s;background:white';
+    });
+
+    function selectType(el) {
+      document.querySelectorAll('.type-card').forEach(c => { c.style.borderColor='var(--border)'; c.style.background='white'; });
+      el.style.borderColor = 'var(--primary)';
+      el.style.background = 'rgba(255,107,53,.05)';
+      selectedType = el.dataset.type;
+      document.getElementById('step1-next').disabled = false;
+      if (selectedType === 'tutoring' || selectedType === 'gigs') {
+        document.getElementById('condition-wrap').classList.add('d-none');
+        document.getElementById('orig-price-wrap').classList.add('d-none');
+      } else {
+        document.getElementById('condition-wrap').classList.remove('d-none');
+        document.getElementById('orig-price-wrap').classList.remove('d-none');
+      }
+    }
+
+    function goStep(n) {
+      [1,2,3].forEach(i => document.getElementById(`step-${i}`).classList.add('d-none'));
+      document.getElementById(`step-${n}`).classList.remove('d-none');
+      document.getElementById('prog-bar').style.width = n===1?'33%':n===2?'66%':'100%';
+      document.getElementById('prog-bar2').style.width = n===3?'100%':'0%';
+      ['step1-dot','step2-dot','step3-dot'].forEach((id,idx) => {
+        const dot = document.getElementById(id);
+        dot.className = 'step-dot' + (idx+1 < n?' done':idx+1===n?' active':'');
+      });
+      if (n === 3) buildPreview();
+    }
+
+    document.getElementById('f-title').addEventListener('input', function() {
+      document.getElementById('title-count').textContent = this.value.length;
+    });
+
+    function previewFiles(input) {
+      const wrap = document.getElementById('file-previews');
+      wrap.innerHTML = '';
+      [...input.files].forEach(f => {
+        const url = URL.createObjectURL(f);
+        wrap.innerHTML += `<img src="${url}" style="width:72px;height:72px;object-fit:cover;border-radius:8px;border:2px solid var(--border)" />`;
+      });
+    }
+
+    function buildPreview() {
+      const title = document.getElementById('f-title').value || 'Untitled Listing';
+      const price = document.getElementById('f-price').value || '0';
+      const orig = document.getElementById('f-orig').value;
+      const desc = document.getElementById('f-desc').value || 'No description provided.';
+      document.getElementById('preview-card').innerHTML = `
+        <div class="d-flex gap-3 align-items-start">
+          <div style="width:64px;height:64px;background:var(--border);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:2rem;flex-shrink:0">
+            ${selectedType==='textbooks'?'📚':selectedType==='tutoring'?'🎓':selectedType==='gigs'?'💼':'📐'}
+          </div>
+          <div class="flex-grow-1">
+            <div style="font-family:var(--font-head);font-weight:700;font-size:1rem;color:var(--secondary);margin-bottom:.25rem">${title}</div>
+            <div style="font-size:.82rem;color:var(--text-muted);margin-bottom:.5rem">By ${CC_DB.currentUser.name} · ${CC_DB.currentUser.college}</div>
+            <div style="font-size:.88rem;color:var(--text);margin-bottom:.6rem">${desc.substring(0,100)}${desc.length>100?'…':''}</div>
+            <div style="font-family:var(--font-head);font-size:1.2rem;font-weight:800;color:var(--primary)">₹${parseInt(price).toLocaleString('en-IN')} ${orig?`<span style="font-size:.8rem;text-decoration:line-through;color:var(--text-muted);font-weight:400">₹${parseInt(orig).toLocaleString('en-IN')}</span>`:''}
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function publishListing() {
+      if (!document.getElementById('terms-check').checked) {
+        showToast('Please agree to community guidelines', '⚠️'); return;
+      }
+      const title = document.getElementById('f-title').value;
+      const price = document.getElementById('f-price').value;
+      if (!title || !price) { showToast('Please fill all required fields', '⚠️'); goStep(2); return; }
+      showToast('🎉 Listing published successfully!', '🚀');
+      setTimeout(() => window.location.href = '../pages/browse.html', 2200);
+    }
+  </script>
+</body>
+</html>

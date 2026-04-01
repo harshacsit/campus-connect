@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cart — CampusConnect</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <div id="cc-navbar"></div>
+  <div id="cc-toast" class="cc-toast"></div>
+
+  <div class="page-titlebar">
+    <div class="container"><h1>My Cart</h1></div>
+  </div>
+
+  <div class="container pb-5">
+    <div class="row g-4" id="cart-content"></div>
+    <div id="empty-cart" class="text-center py-5 d-none">
+      <div style="font-size:4rem;margin-bottom:1rem">🛒</div>
+      <div style="font-family:var(--font-head);font-size:1.3rem;font-weight:800;color:var(--secondary);margin-bottom:.5rem">Your cart is empty</div>
+      <p style="color:var(--text-muted)">Browse the marketplace to find great deals!</p>
+      <a href="browse.html" class="btn-cc mt-3">Browse Listings</a>
+    </div>
+  </div>
+
+  <div id="cc-footer"></div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../js/db.js"></script>
+  <script src="../js/components.js"></script>
+  <script>
+    renderNavbar('');
+    renderFooter();
+
+    function removeFromCart(id) {
+      CC_DB.cart = CC_DB.cart.filter(c => c.id !== id);
+      CC_DB.saveCart();
+      renderCart();
+      showToast('Removed from cart', '🗑️');
+    }
+
+    function renderCart() {
+      const items = CC_DB.getCartItems();
+      const content = document.getElementById('cart-content');
+      const empty = document.getElementById('empty-cart');
+      if (items.length === 0) { content.innerHTML = ''; empty.classList.remove('d-none'); return; }
+      empty.classList.add('d-none');
+
+      const total = CC_DB.getCartTotal();
+      const savings = items.reduce((s,i) => s + (i.original ? (i.original - i.price) : 0), 0);
+
+      content.innerHTML = `
+        <div class="col-lg-8">
+          <div class="cc-card p-0">
+            ${items.map((item, idx) => `
+            <div class="d-flex gap-3 p-3 align-items-start ${idx < items.length-1 ? 'border-bottom' : ''}" style="border-color:var(--border)!important">
+              <div style="width:72px;height:72px;background:linear-gradient(135deg,#f0ece3,#e5e0d8);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:2rem;flex-shrink:0">${item.image}</div>
+              <div class="flex-grow-1">
+                <div style="font-family:var(--font-head);font-weight:700;font-size:.95rem;color:var(--secondary);margin-bottom:.2rem">${item.title}</div>
+                <div style="font-size:.8rem;color:var(--text-muted);margin-bottom:.4rem">By ${item.seller} · ${item.college}</div>
+                <div class="d-flex align-items-center gap-3">
+                  <span class="chip ${item.category==='tutoring'?'green':item.category==='gigs'?'yellow':''}">${item.category}</span>
+                  ${item.condition ? `<span style="font-size:.75rem;color:var(--text-muted)">${item.condition}</span>` : ''}
+                </div>
+              </div>
+              <div class="text-end">
+                <div style="font-family:var(--font-head);font-size:1.1rem;font-weight:800;color:var(--primary)">₹${item.price.toLocaleString('en-IN')}</div>
+                ${item.original ? `<div style="font-size:.78rem;text-decoration:line-through;color:var(--text-muted)">₹${item.original.toLocaleString('en-IN')}</div>` : ''}
+                <button onclick="removeFromCart('${item.id}')" style="border:none;background:none;color:var(--text-muted);font-size:.78rem;cursor:pointer;margin-top:.5rem;padding:0" class="d-flex align-items-center gap-1 ms-auto">
+                  <i class="bi bi-trash"></i> Remove
+                </button>
+              </div>
+            </div>`).join('')}
+          </div>
+          <div class="d-flex gap-2 mt-3">
+            <a href="browse.html" class="btn-cc-outline"><i class="bi bi-arrow-left"></i> Continue Shopping</a>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="payment-card mb-3">
+            <div style="font-family:var(--font-head);font-weight:700;font-size:1rem;color:var(--secondary);margin-bottom:1.2rem">Order Summary</div>
+            ${items.map(i => `
+            <div class="d-flex justify-content-between mb-2" style="font-size:.88rem">
+              <span style="color:var(--text-muted);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${i.title}</span>
+              <span>₹${i.price.toLocaleString('en-IN')}</span>
+            </div>`).join('')}
+            <hr class="divider" />
+            ${savings > 0 ? `<div class="d-flex justify-content-between mb-2" style="font-size:.88rem">
+              <span style="color:var(--text-muted)">You Save</span>
+              <span style="color:var(--accent);font-weight:600">−₹${savings.toLocaleString('en-IN')}</span>
+            </div>` : ''}
+            <div class="d-flex justify-content-between mb-2" style="font-size:.88rem">
+              <span style="color:var(--text-muted)">Platform Fee</span>
+              <span style="color:var(--accent)">FREE</span>
+            </div>
+            <hr class="divider" />
+            <div class="d-flex justify-content-between mb-3">
+              <span style="font-family:var(--font-head);font-weight:700">Total</span>
+              <span style="font-family:var(--font-head);font-size:1.3rem;font-weight:800;color:var(--primary)">₹${total.toLocaleString('en-IN')}</span>
+            </div>
+            <a href="payment.html?total=${total}" class="btn-cc w-100 justify-content-center">
+              Proceed to Payment <i class="bi bi-arrow-right"></i>
+            </a>
+            <div class="mt-3 text-center" style="font-size:.75rem;color:var(--text-muted)">
+              <i class="bi bi-shield-check" style="color:var(--accent)"></i> Secured by CampusConnect Escrow
+            </div>
+          </div>
+          <div class="cc-sidebar">
+            <div class="sidebar-title" style="font-size:.82rem">🎁 Have a promo code?</div>
+            <div class="d-flex gap-2">
+              <input type="text" class="cc-input" placeholder="CAMPUS20" style="font-size:.82rem" id="promo-input" />
+              <button class="btn-cc" style="padding:.5rem .9rem;font-size:.78rem;flex-shrink:0" onclick="applyPromo()">Apply</button>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function applyPromo() {
+      const code = document.getElementById('promo-input').value.trim().toUpperCase();
+      if (code === 'CAMPUS20') showToast('Promo applied! 20% off', '🎉');
+      else showToast('Invalid promo code', '❌');
+    }
+
+    renderCart();
+  </script>
+</body>
+</html>

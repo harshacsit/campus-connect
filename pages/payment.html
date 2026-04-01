@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment — CampusConnect</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <div id="cc-navbar"></div>
+  <div id="cc-toast" class="cc-toast"></div>
+
+  <div class="page-titlebar">
+    <div class="container">
+      <div class="d-flex align-items-center gap-2 mb-1" style="color:var(--text-muted);font-size:.85rem">
+        <a href="cart.html" style="color:var(--text-muted)">Cart</a>
+        <i class="bi bi-chevron-right"></i> <span style="color:var(--primary)">Payment</span>
+      </div>
+      <h1>Secure Checkout</h1>
+    </div>
+  </div>
+
+  <div class="container pb-5">
+    <div class="row g-4 justify-content-center">
+      <div class="col-lg-7">
+
+        <!-- Payment Methods -->
+        <div class="cc-card p-4 mb-4">
+          <div style="font-family:var(--font-head);font-weight:700;font-size:1rem;color:var(--secondary);margin-bottom:1.2rem">
+            <i class="bi bi-credit-card me-2" style="color:var(--primary)"></i>Payment Method
+          </div>
+          <div class="d-flex gap-2 flex-wrap mb-3" id="pay-tabs">
+            <button class="pay-tab active" data-tab="card" onclick="switchTab(this,'card')">💳 Card</button>
+            <button class="pay-tab" data-tab="upi" onclick="switchTab(this,'upi')">📱 UPI</button>
+            <button class="pay-tab" data-tab="wallet" onclick="switchTab(this,'wallet')">👜 Campus Wallet</button>
+            <button class="pay-tab" data-tab="netbanking" onclick="switchTab(this,'netbanking')">🏦 Net Banking</button>
+          </div>
+
+          <!-- CARD TAB -->
+          <div id="tab-card">
+            <!-- Live card visual -->
+            <div class="card-visual mb-4">
+              <div class="card-chip"></div>
+              <div class="card-num" id="display-num">•••• •••• •••• ••••</div>
+              <div class="d-flex justify-content-between align-items-end">
+                <div>
+                  <div style="font-size:.65rem;opacity:.5;text-transform:uppercase;letter-spacing:.1em">Card Holder</div>
+                  <div style="font-family:var(--font-head);font-weight:600;font-size:.9rem" id="display-name">YOUR NAME</div>
+                </div>
+                <div>
+                  <div style="font-size:.65rem;opacity:.5;text-transform:uppercase;letter-spacing:.1em">Expires</div>
+                  <div style="font-family:var(--font-head);font-weight:600;font-size:.9rem" id="display-expiry">MM/YY</div>
+                </div>
+                <div class="card-logo" id="card-logo">VISA</div>
+              </div>
+            </div>
+
+            <div class="cc-form-group">
+              <label class="cc-label">Card Number *</label>
+              <input type="text" class="cc-input" placeholder="1234 5678 9012 3456" id="card-num" maxlength="19" oninput="formatCard(this)" />
+            </div>
+            <div class="cc-form-group">
+              <label class="cc-label">Name on Card *</label>
+              <input type="text" class="cc-input" placeholder="As printed on card" id="card-name" oninput="document.getElementById('display-name').textContent=this.value.toUpperCase()||'YOUR NAME'" />
+            </div>
+            <div class="row g-3">
+              <div class="col-6">
+                <div class="cc-form-group mb-0">
+                  <label class="cc-label">Expiry Date *</label>
+                  <input type="text" class="cc-input" placeholder="MM/YY" id="card-expiry" maxlength="5" oninput="formatExpiry(this)" />
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="cc-form-group mb-0">
+                  <label class="cc-label">CVV *</label>
+                  <input type="password" class="cc-input" placeholder="•••" id="card-cvv" maxlength="3" />
+                </div>
+              </div>
+            </div>
+            <div class="mt-3">
+              <label class="filter-check gap-2">
+                <input type="checkbox" id="save-card" />
+                Save card for future payments
+              </label>
+            </div>
+          </div>
+
+          <!-- UPI TAB -->
+          <div id="tab-upi" class="d-none">
+            <div style="background:linear-gradient(135deg,rgba(255,107,53,.06),rgba(0,212,170,.06));border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:1.5rem;margin-bottom:1rem">
+              <div style="font-family:var(--font-head);font-weight:700;font-size:.95rem;margin-bottom:.8rem">Pay via UPI Apps</div>
+              <div class="row g-2">
+                <div class="col-6"><div class="upi-option" onclick="selectUPI(this,'GPay')">🟢 Google Pay</div></div>
+                <div class="col-6"><div class="upi-option" onclick="selectUPI(this,'PhonePe')">🟣 PhonePe</div></div>
+                <div class="col-6"><div class="upi-option" onclick="selectUPI(this,'Paytm')">🔵 Paytm</div></div>
+                <div class="col-6"><div class="upi-option" onclick="selectUPI(this,'BHIM')">🟠 BHIM UPI</div></div>
+              </div>
+            </div>
+            <div class="cc-form-group">
+              <label class="cc-label">Or enter UPI ID manually</label>
+              <input type="text" class="cc-input" placeholder="yourname@upi" id="upi-id" />
+            </div>
+          </div>
+
+          <!-- WALLET TAB -->
+          <div id="tab-wallet" class="d-none">
+            <div style="background:linear-gradient(135deg,var(--secondary) 0%,#2d2d52 100%);border-radius:16px;padding:1.5rem;color:white;margin-bottom:1.2rem">
+              <div style="font-size:.75rem;opacity:.5;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.3rem">Campus Wallet Balance</div>
+              <div style="font-family:var(--font-head);font-size:2.2rem;font-weight:800">₹1,250<span style="font-size:1rem;opacity:.5">.00</span></div>
+              <div style="font-size:.8rem;opacity:.6;margin-top:.5rem">Linked to arjun.reddy@university.edu</div>
+            </div>
+            <div id="wallet-status" class="p-3 rounded" style="border:1.5px solid var(--accent);background:rgba(0,212,170,.07);font-size:.88rem;color:var(--text)"></div>
+          </div>
+
+          <!-- NET BANKING TAB -->
+          <div id="tab-netbanking" class="d-none">
+            <div class="cc-form-group">
+              <label class="cc-label">Select Bank</label>
+              <select class="cc-select" id="bank-select">
+                <option value="">Choose your bank…</option>
+                <option>State Bank of India (SBI)</option>
+                <option>HDFC Bank</option>
+                <option>ICICI Bank</option>
+                <option>Axis Bank</option>
+                <option>Kotak Mahindra Bank</option>
+                <option>Andhra Bank</option>
+                <option>Canara Bank</option>
+              </select>
+            </div>
+            <div style="background:rgba(255,107,53,.06);border:1.5px dashed var(--primary);border-radius:var(--radius-sm);padding:1rem;font-size:.85rem;color:var(--text-muted)">
+              <i class="bi bi-info-circle me-1" style="color:var(--primary)"></i>
+              You'll be redirected to your bank's secure portal to complete payment.
+            </div>
+          </div>
+        </div>
+
+        <!-- Billing Address -->
+        <div class="cc-card p-4 mb-4">
+          <div style="font-family:var(--font-head);font-weight:700;font-size:1rem;color:var(--secondary);margin-bottom:1.2rem">
+            <i class="bi bi-geo-alt me-2" style="color:var(--primary)"></i>Billing / Delivery Details
+          </div>
+          <div class="row g-3">
+            <div class="col-6">
+              <div class="cc-form-group mb-0">
+                <label class="cc-label">Full Name</label>
+                <input type="text" class="cc-input" value="Arjun Reddy" id="b-name" />
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="cc-form-group mb-0">
+                <label class="cc-label">Phone</label>
+                <input type="tel" class="cc-input" placeholder="+91 9876543210" id="b-phone" />
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="cc-form-group mb-0">
+                <label class="cc-label">College / Campus Address</label>
+                <input type="text" class="cc-input" placeholder="Dept., Block, College Name, City" id="b-addr" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-cc w-100 justify-content-center" style="font-size:1.05rem;padding:.9rem" onclick="processPayment()" id="pay-btn">
+          <i class="bi bi-shield-lock"></i> Pay Securely — ₹<span id="pay-amount">0</span>
+        </button>
+        <div class="text-center mt-2" style="font-size:.75rem;color:var(--text-muted)">
+          🔒 256-bit SSL encrypted. Your payment is 100% secure.
+        </div>
+      </div>
+
+      <!-- ORDER SUMMARY SIDEBAR -->
+      <div class="col-lg-4">
+        <div class="payment-card mb-3">
+          <div style="font-family:var(--font-head);font-weight:700;font-size:.95rem;color:var(--secondary);margin-bottom:1rem">Order Summary</div>
+          <div id="summary-items"></div>
+          <hr class="divider" />
+          <div class="d-flex justify-content-between mb-1" style="font-size:.88rem">
+            <span style="color:var(--text-muted)">Subtotal</span>
+            <span id="s-sub">₹0</span>
+          </div>
+          <div class="d-flex justify-content-between mb-1" style="font-size:.88rem">
+            <span style="color:var(--text-muted)">Platform Fee</span>
+            <span style="color:var(--accent)">FREE</span>
+          </div>
+          <div class="d-flex justify-content-between mb-1" style="font-size:.88rem">
+            <span style="color:var(--text-muted)">GST (0%)</span>
+            <span>₹0</span>
+          </div>
+          <hr class="divider" />
+          <div class="d-flex justify-content-between">
+            <span style="font-family:var(--font-head);font-weight:700">Total</span>
+            <span style="font-family:var(--font-head);font-size:1.3rem;font-weight:800;color:var(--primary)" id="s-total">₹0</span>
+          </div>
+        </div>
+        <div class="cc-sidebar">
+          <div class="sidebar-title" style="font-size:.82rem">🛡️ Buyer Protection</div>
+          <p style="font-size:.82rem;color:var(--text-muted);margin-bottom:.8rem">CampusConnect holds your payment in escrow and releases it only after you confirm receipt.</p>
+          <div style="font-size:.8rem;color:var(--text-muted)">
+            <div class="mb-1">✅ Escrow-protected payments</div>
+            <div class="mb-1">✅ Full refund if item not as described</div>
+            <div>✅ 24/7 dispute resolution</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUCCESS MODAL -->
+  <div id="success-overlay" class="d-none" style="position:fixed;inset:0;background:rgba(26,26,46,.7);z-index:9999;display:none!important;align-items:center;justify-content:center">
+    <div style="background:white;border-radius:24px;padding:3rem;text-align:center;max-width:420px;width:90%;animation:fadeUp .4s ease">
+      <div style="font-size:4rem;margin-bottom:1rem">🎉</div>
+      <div style="font-family:var(--font-head);font-size:1.5rem;font-weight:800;color:var(--secondary);margin-bottom:.5rem">Payment Successful!</div>
+      <p style="color:var(--text-muted);margin-bottom:1.5rem">Your order has been placed and the seller has been notified. You'll receive a confirmation on your college email.</p>
+      <div style="background:var(--bg);border-radius:var(--radius-sm);padding:1rem;margin-bottom:1.5rem">
+        <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:.2rem">Order ID</div>
+        <div style="font-family:var(--font-head);font-weight:700;color:var(--secondary)" id="order-id">CC-2025-XXXX</div>
+      </div>
+      <a href="orders.html" class="btn-cc w-100 justify-content-center">View My Orders</a>
+    </div>
+  </div>
+
+  <div id="cc-footer"></div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../js/db.js"></script>
+  <script src="../js/components.js"></script>
+  <script>
+    renderNavbar('');
+    renderFooter();
+
+    // Pay tab styles
+    document.head.insertAdjacentHTML('beforeend', `<style>
+      .pay-tab{padding:.5rem 1rem;border-radius:8px;border:2px solid var(--border);background:white;font-family:var(--font-head);font-weight:600;font-size:.83rem;cursor:pointer;transition:all .2s}
+      .pay-tab.active{border-color:var(--primary);color:var(--primary);background:rgba(255,107,53,.06)}
+      .upi-option{border:2px solid var(--border);border-radius:10px;padding:.6rem 1rem;text-align:center;cursor:pointer;font-size:.85rem;font-weight:600;font-family:var(--font-head);transition:all .2s}
+      .upi-option:hover,.upi-option.active{border-color:var(--primary);background:rgba(255,107,53,.06);color:var(--primary)}
+    </style>`);
+
+    // Load cart items
+    const params = new URLSearchParams(window.location.search);
+    const total = parseInt(params.get('total')) || CC_DB.getCartTotal();
+    const items = CC_DB.getCartItems();
+
+    document.getElementById('pay-amount').textContent = total.toLocaleString('en-IN');
+    document.getElementById('s-sub').textContent = '₹' + total.toLocaleString('en-IN');
+    document.getElementById('s-total').textContent = '₹' + total.toLocaleString('en-IN');
+
+    const sumEl = document.getElementById('summary-items');
+    if (items.length > 0) {
+      sumEl.innerHTML = items.map(i => `<div class="d-flex justify-content-between mb-2" style="font-size:.85rem"><span style="color:var(--text-muted);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${i.image} ${i.title}</span><span>₹${i.price.toLocaleString('en-IN')}</span></div>`).join('');
+    } else {
+      sumEl.innerHTML = `<div style="font-size:.85rem;color:var(--text-muted)">Order total: ₹${total.toLocaleString('en-IN')}</div>`;
+    }
+
+    // Wallet status update
+    const walletBalance = CC_DB.currentUser.wallet;
+    document.getElementById('wallet-status').innerHTML = walletBalance >= total
+      ? `✅ Sufficient balance. ₹${(walletBalance - total).toLocaleString('en-IN')} will remain after payment.`
+      : `⚠️ Insufficient balance. You need ₹${(total - walletBalance).toLocaleString('en-IN')} more. <a href="#" style="color:var(--primary)">Top Up Wallet</a>`;
+
+    function switchTab(btn, tab) {
+      document.querySelectorAll('.pay-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      ['card','upi','wallet','netbanking'].forEach(t => document.getElementById(`tab-${t}`).classList.add('d-none'));
+      document.getElementById(`tab-${tab}`).classList.remove('d-none');
+    }
+
+    function formatCard(input) {
+      let v = input.value.replace(/\D/g,'').substring(0,16);
+      input.value = v.replace(/(.{4})/g,'$1 ').trim();
+      const masked = v ? v.substring(0,4) + (v.length>4?' ':'') + (v.length>4?'•'.repeat(Math.min(4,v.length-4)):'') + (v.length>8?' ':'') + (v.length>8?'•'.repeat(Math.min(4,v.length-8)):'') + (v.length>12?' ':'') + (v.length>12?v.substring(12):'') : '•••• •••• •••• ••••';
+      document.getElementById('display-num').textContent = input.value.padEnd(19,'•').replace(/\d(?=.{5,})/g,'•') || '•••• •••• •••• ••••';
+      const logo = v.startsWith('4')?'VISA':v.startsWith('5')?'MASTER':v.startsWith('6')?'RUPAY':'';
+      document.getElementById('card-logo').textContent = logo || 'VISA';
+    }
+
+    function formatExpiry(input) {
+      let v = input.value.replace(/\D/g,'');
+      if (v.length >= 2) v = v.substring(0,2) + '/' + v.substring(2,4);
+      input.value = v;
+      document.getElementById('display-expiry').textContent = v || 'MM/YY';
+    }
+
+    function selectUPI(el, name) {
+      document.querySelectorAll('.upi-option').forEach(u=>u.classList.remove('active'));
+      el.classList.add('active');
+      showToast(`Opening ${name}…`, '📱');
+    }
+
+    function processPayment() {
+      const activeTab = document.querySelector('.pay-tab.active').dataset.tab;
+      let valid = true;
+
+      if (activeTab === 'card') {
+        const num = document.getElementById('card-num').value.replace(/\s/g,'');
+        const name = document.getElementById('card-name').value;
+        const expiry = document.getElementById('card-expiry').value;
+        const cvv = document.getElementById('card-cvv').value;
+        if (num.length < 16 || !name || expiry.length < 5 || cvv.length < 3) { showToast('Please fill all card details', '⚠️'); valid = false; }
+      } else if (activeTab === 'netbanking') {
+        if (!document.getElementById('bank-select').value) { showToast('Please select a bank', '⚠️'); valid = false; }
+      }
+
+      if (!valid) return;
+
+      const btn = document.getElementById('pay-btn');
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Processing…';
+      btn.disabled = true;
+
+      setTimeout(() => {
+        const orderId = 'CC-2025-' + Math.floor(Math.random()*9000+1000);
+        document.getElementById('order-id').textContent = orderId;
+        CC_DB.cart = []; CC_DB.saveCart();
+        const overlay = document.getElementById('success-overlay');
+        overlay.style.display = 'flex';
+        overlay.classList.remove('d-none');
+      }, 2200);
+    }
+  </script>
+</body>
+</html>
